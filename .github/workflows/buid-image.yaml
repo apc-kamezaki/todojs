@@ -1,0 +1,50 @@
+name: build-demo
+on:
+  workflow_dispatch:
+    inputs:
+      tagName:
+        description: 'Tag name for container image'
+        required: true
+        default: 'latest'
+    # Sets the permissions granted to the GITHUB_TOKEN for the actions in this job.
+permissions:
+  id-token: write
+  contents: read
+  
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    name: build image
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout
+
+      # see: https://github.com/docker/metadata-action
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=raw,value=${{ github.event.inputs.tagName }}
+            type=sha
+          labels: |
+            org.opencontainers.image.title=${{ github.repository }}
+            org.opencontainers.image.source=${{ github.repositoryUrl }}
+
+      # see also https://github.com/docker/metadata-action
+      - name: Build and push
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./code/
+          file: ./code/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
