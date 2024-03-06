@@ -5,12 +5,7 @@ on:
       tagName:
         description: 'Tag name for container image'
         required: true
-        default: 'latest'
-    # Sets the permissions granted to the GITHUB_TOKEN for the actions in this job.
-permissions:
-  id-token: write
-  contents: read
-  
+        default: 'latest'  
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
