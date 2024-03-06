@@ -1,0 +1,29 @@
+# local environment
+.envrc
+.env
+.env.test
+
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.swp
+*.tmp
+
+# Log files
+*.log
+logs
+
+# Backup files
+*.bak
+
+# vscode database functionality support files
+*.session.sql
+
+# Coverage directory generated when running tests with coverage
+coverage
+
+# Local help file
+HELP.md

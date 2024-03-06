@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  todojs:
+    image: todojs:latest
+    ports:
+      - 3000:3000
+    environment:
+      ENVIRONMENT: development
+      DATABASE_NAME: azure-todo-app
+      DATABASE_URL: mongodb://mongotodo:27017
+    networks:
+      - todo-net
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: mongotodo
+    image: bitnami/mongodb:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo-admin
+      MONGO_INITDB_ROOT_PASSWORD: mongo-password
+    restart: always
+    ports:
+      - 27017:27017
+    networks:
+      - todo-net
+
+networks:
+  todo-net:
